@@ -5,7 +5,10 @@
  */
 
 const http = require('http');
+<<<<<<< HEAD
 const WebSocket = require('ws');
+=======
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
 
 function testAPI(path, method = 'GET', data = null) {
   return new Promise((resolve, reject) => {
@@ -39,6 +42,7 @@ function testAPI(path, method = 'GET', data = null) {
   });
 }
 
+<<<<<<< HEAD
 async function testWebSocket() {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket('ws://localhost:8080/ws');
@@ -84,6 +88,8 @@ async function testWebSocket() {
   });
 }
 
+=======
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
 async function runTests() {
   console.log('🔍 开始网关服务测试...\n');
 
@@ -104,6 +110,7 @@ async function runTests() {
       test: () => testAPI('/api/v1/debate-topic')
     },
     {
+<<<<<<< HEAD
       name: 'API - AI 内容',
       test: () => testAPI('/api/v1/ai-content')
     },
@@ -140,6 +147,10 @@ async function runTests() {
     {
       name: 'WebSocket 连接',
       test: () => testWebSocket()
+=======
+      name: 'API - 直播状态',
+      test: () => testAPI('/api/admin/live/status')
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
     }
   ];
 
@@ -147,6 +158,7 @@ async function runTests() {
 
   for (const testCase of tests) {
     try {
+<<<<<<< HEAD
       console.log(`\n📋 测试: ${testCase.name}`);
       const result = await testCase.test();
 
@@ -159,6 +171,12 @@ async function runTests() {
           results.push({ name: testCase.name, success: false });
         }
       } else if (result.status === 200) {
+=======
+      console.log(`📋 测试: ${testCase.name}`);
+      const result = await testCase.test();
+
+      if (result.status === 200) {
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
         console.log(`   ✅ ${testCase.name}: HTTP ${result.status}`);
         results.push({ name: testCase.name, success: true });
       } else {
@@ -185,6 +203,7 @@ async function runTests() {
   console.log(`✅ 通过: ${successCount}/${totalCount}`);
   console.log(`❌ 失败: ${totalCount - successCount}/${totalCount}`);
 
+<<<<<<< HEAD
   results.forEach(result => {
     const icon = result.success ? '✅' : '❌';
     console.log(`${icon} ${result.name}`);
@@ -197,6 +216,12 @@ async function runTests() {
     console.log('🚀 已准备好替代 Nginx 反向代理');
   } else {
     console.log('⚠️  部分测试失败，请检查网关服务配置');
+=======
+  if (successCount === totalCount) {
+    console.log('🎉 网关服务测试通过！');
+  } else {
+    console.log('⚠️  部分测试失败');
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
   }
 
   console.log('='.repeat(60));

@@ -1,6 +1,7 @@
 // -*- coding: utf-8 -*-
 /**
  * 直播辩论系统 - 中间层网关服务
+<<<<<<< HEAD
  * 替代 Nginx 反向代理，使用 Node.js + Express 实现
  *
  * 功能特性:
@@ -9,10 +10,14 @@
  * - WebSocket 实时通信 (/ws)
  * - CORS 跨域支持
  * - 请求压缩和安全头
+=======
+ * 替代 Nginx 的 Node.js 实现
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
  */
 
 const express = require('express');
 const cors = require('cors');
+<<<<<<< HEAD
 const compression = require('compression');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -86,10 +91,35 @@ app.use('/api', (req, res, next) => {
 
 // 健康检查
 app.get('/api/health', (req, res) => {
+=======
+const WebSocket = require('ws');
+const path = require('path');
+
+const app = express();
+const PORT = 8080;
+
+// 中间件
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 静态文件服务
+const adminPath = path.join(__dirname, 'admin');
+try {
+  app.use('/admin', express.static(adminPath));
+  console.log('📁 后台管理目录:', adminPath);
+} catch (e) {
+  console.log('⚠️  后台管理目录不存在');
+}
+
+// API 路由
+app.get('/health', (req, res) => {
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
   res.json({
     status: 'OK',
     service: 'live-debate-gateway',
     version: '2.0.0',
+<<<<<<< HEAD
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage()
@@ -150,11 +180,27 @@ app.get('/api/v1/votes', (req, res) => {
     data: {
       streamId: stream_id || 'stream-1',
       ...voteData,
+=======
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 模拟 API
+app.get('/api/v1/votes', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      streamId: 'stream-1',
+      leftVotes: 245,
+      rightVotes: 198,
+      totalVotes: 443,
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
       lastUpdated: new Date().toISOString()
     }
   });
 });
 
+<<<<<<< HEAD
 app.post('/api/v1/user-vote', (req, res) => {
   const { leftVotes, rightVotes, streamId } = req.body.request || req.body;
 
@@ -243,19 +289,39 @@ app.post('/api/comment', (req, res) => {
 /**
  * 模拟后端API - 直播管理
  */
+=======
+app.get('/api/v1/debate-topic', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      id: 'debate-1',
+      title: '如果有一个能一键消除痛苦的按钮，你会按吗？',
+      description: '这是一个关于痛苦、成长与人性选择的深度辩论',
+      leftSide: '会按',
+      rightSide: '不会按',
+      streamId: 'stream-1'
+    }
+  });
+});
+
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
 app.get('/api/admin/live/status', (req, res) => {
   res.json({
     success: true,
     data: {
       isLive: true,
       liveStreamUrl: 'rtmp://192.168.31.189:1935/live/stream-1',
+<<<<<<< HEAD
       currentStreamId: 'stream-1',
+=======
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
       viewers: 1250,
       status: 'active'
     }
   });
 });
 
+<<<<<<< HEAD
 app.get('/api/admin/dashboard', (req, res) => {
   res.json({
     success: true,
@@ -460,3 +526,18 @@ process.on('SIGINT', () => {
 
 // 导出应用实例（用于测试）
 module.exports = app;
+=======
+// WebSocket 服务器
+let wss;
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log('🚀 网关服务启动在端口:', PORT);
+});
+
+wss = new WebSocket.Server({ server, path: '/ws' });
+wss.on('connection', (ws) => {
+  console.log('📡 WebSocket 连接');
+  ws.send(JSON.stringify({ type: 'connected', message: '网关连接成功' }));
+});
+
+console.log('✅ 网关服务初始化完成');
+>>>>>>> 1b57f6ffbef661d96662bdce0ade8baf32a8d41c
