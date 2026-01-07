@@ -4,8 +4,9 @@
  * 使用faker.js生成各种模拟数据
  */
 
-const { faker } = require('faker');
-faker.locale = 'zh_CN'; // 设置中文环境
+const { faker } = require('@faker-js/faker');
+// 设置中文环境
+faker.setLocale('zh_CN');
 
 // 直播流数据
 const generateMockStreams = () => {
