@@ -6,7 +6,7 @@
 
 const { faker } = require('@faker-js/faker');
 // 创建中文环境的faker实例
-const customFaker = new customFaker.constructor({ locale: 'zh_CN' });
+const customFaker = new faker.constructor({ locale: 'zh_CN' });
 
 // 直播流数据
 const generateMockStreams = () => {
