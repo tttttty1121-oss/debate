@@ -1,6 +1,6 @@
 {
   "name": "backend-live-debate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "直播辩论小程序后端服务 - Mock数据实现",
   "main": "server.js",
   "scripts": {
