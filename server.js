@@ -36,6 +36,30 @@ setInterval(() => {
 
 // ==================== API路由 ====================
 
+// 根路径 - API文档和欢迎页面
+app.get('/', (req, res) => {
+  res.json({
+    message: '🎉 直播辩论小程序后端API服务',
+    status: '运行正常',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: 'GET /health - 健康检查',
+      debateTopic: 'GET /api/v1/debate-topic - 获取辩论话题',
+      votes: 'GET /api/v1/votes?stream_id={id} - 获取投票数据',
+      userVote: 'POST /api/v1/user-vote - 用户投票',
+      liveStatus: 'GET /api/admin/live/status - 直播状态',
+      comments: 'GET /api/v1/comments?stream_id={id} - 获取评论',
+      aiAnalysis: 'GET /api/v1/ai-analysis?stream_id={id} - AI分析数据'
+    },
+    websocket: {
+      url: 'wss://' + req.headers.host,
+      events: ['vote-update', 'comment-new', 'live-status']
+    },
+    docs: '服务已成功部署到Render云端 🚀'
+  });
+});
+
 // 健康检查
 app.get('/health', (req, res) => {
   res.json({
