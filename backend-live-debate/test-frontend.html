@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>直播辩论小程序 - 前后端集成测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 3px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 直播辩论小程序 - 前后端集成测试</h1>
+
+        <div class="test-section">
+            <h3>📋 健康检查</h3>
+            <button class="test-button" onclick="testHealth()">测试健康检查</button>
+            <div id="health-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🗳️ 获取辩题</h3>
+            <button class="test-button" onclick="testDebateTopic()">获取辩题信息</button>
+            <div id="debate-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 获取投票统计</h3>
+            <button class="test-button" onclick="testVotes()">获取投票数据</button>
+            <div id="votes-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎭 用户投票</h3>
+            <div style="margin-bottom: 10px;">
+                <label>左方票数: <input type="number" id="leftVotes" value="60" min="0" max="100"></label>
+                <label>右方票数: <input type="number" id="rightVotes" value="40" min="0" max="100"></label>
+            </div>
+            <button class="test-button" onclick="testUserVote()">提交投票</button>
+            <div id="vote-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💬 添加评论</h3>
+            <div style="margin-bottom: 10px;">
+                <input type="text" id="commentText" placeholder="输入评论内容" style="width: 300px; padding: 5px;">
+                <input type="text" id="commentUser" placeholder="用户名" value="测试用户" style="padding: 5px;">
+            </div>
+            <button class="test-button" onclick="testAddComment()">添加评论</button>
+            <div id="comment-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📺 获取直播状态</h3>
+            <button class="test-button" onclick="testLiveStatus()">获取直播状态</button>
+            <div id="live-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📈 数据概览</h3>
+            <button class="test-button" onclick="testDashboard()">获取数据概览</button>
+            <div id="dashboard-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // 通用API请求函数
+        async function apiRequest(url, method = 'GET', data = null) {
+            try {
+                const config = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (data) {
+                    config.body = JSON.stringify(data);
+                }
+
+                const response = await fetch(url, config);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                return { success: true, data: result };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        // 显示结果
+        function showResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            if (result.success) {
+                element.innerHTML = `<span class="success">✅ 成功</span>\n${JSON.stringify(result.data, null, 2)}`;
+            } else {
+                element.innerHTML = `<span class="error">❌ 失败: ${result.error}</span>`;
+            }
+        }
+
+        // 测试函数
+        async function testHealth() {
+            const result = await apiRequest(`${API_BASE}/health`);
+            showResult('health-result', result);
+        }
+
+        async function testDebateTopic() {
+            const result = await apiRequest(`${API_BASE}/api/v1/debate-topic?stream_id=stream-1`);
+            showResult('debate-result', result);
+        }
+
+        async function testVotes() {
+            const result = await apiRequest(`${API_BASE}/api/v1/votes?stream_id=stream-1`);
+            showResult('votes-result', result);
+        }
+
+        async function testUserVote() {
+            const leftVotes = parseInt(document.getElementById('leftVotes').value);
+            const rightVotes = parseInt(document.getElementById('rightVotes').value);
+
+            const voteData = {
+                request: {
+                    leftVotes: leftVotes,
+                    rightVotes: rightVotes,
+                    streamId: 'stream-1',
+                    userId: 'test-user-' + Date.now()
+                }
+            };
+
+            const result = await apiRequest(`${API_BASE}/api/v1/user-vote`, 'POST', voteData);
+            showResult('vote-result', result);
+
+            // 如果投票成功，刷新投票统计
+            if (result.success) {
+                setTimeout(() => testVotes(), 500);
+            }
+        }
+
+        async function testAddComment() {
+            const text = document.getElementById('commentText').value.trim();
+            const user = document.getElementById('commentUser').value.trim();
+
+            if (!text) {
+                showResult('comment-result', { success: false, error: '评论内容不能为空' });
+                return;
+            }
+
+            const commentData = {
+                contentId: 'content-1',
+                text: text,
+                user: user || '匿名用户',
+                avatar: '👤'
+            };
+
+            const result = await apiRequest(`${API_BASE}/api/comment`, 'POST', commentData);
+            showResult('comment-result', result);
+        }
+
+        async function testLiveStatus() {
+            const result = await apiRequest(`${API_BASE}/api/admin/live/status`);
+            showResult('live-result', result);
+        }
+
+        async function testDashboard() {
+            const result = await apiRequest(`${API_BASE}/api/admin/dashboard`);
+            showResult('dashboard-result', result);
+        }
+
+        // 页面加载完成后显示说明
+        window.onload = function() {
+            console.log('🔍 前后端集成测试页面已加载');
+            console.log('📡 API服务器:', API_BASE);
+            console.log('💡 点击按钮测试各个API接口');
+        };
+    </script>
+</body>
+</html>

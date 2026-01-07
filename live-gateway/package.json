@@ -1,0 +1,26 @@
+{
+  "name": "live-debate-gateway",
+  "version": "2.0.0",
+  "description": "直播辩论系统中间层网关服务 - Node.js实现",
+  "main": "gateway.js",
+  "scripts": {
+    "start": "node gateway.js",
+    "dev": "nodemon gateway.js",
+    "test": "node test-gateway.js"
+  },
+  "keywords": ["gateway", "proxy", "websocket", "express", "debate", "live"],
+  "author": "直播辩论系统开发团队",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ws": "^8.18.3",
+    "http-proxy-middleware": "^2.0.6",
+    "compression": "^1.7.4",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
