@@ -1,12 +1,12 @@
 // -*- coding: utf-8 -*-
 /**
  * Mock数据生成器
- * 使用faker.js生成各种模拟数据
+ * 使用customFaker.js生成各种模拟数据
  */
 
 const { faker } = require('@faker-js/faker');
-// 设置中文环境
-faker.setLocale('zh_CN');
+// 创建中文环境的faker实例
+const customFaker = new customFaker.constructor({ locale: 'zh_CN' });
 
 // 直播流数据
 const generateMockStreams = () => {
@@ -25,10 +25,10 @@ const generateMockStreams = () => {
       name: template.name,
       description: template.description,
       status: template.status,
-      viewers: faker.datatype.number({ min: 100, max: 10000 }),
-      startTime: faker.date.recent().toISOString(),
+      viewers: customFaker.datatype.number({ min: 100, max: 10000 }),
+      startTime: customFaker.date.recent().toISOString(),
       streamUrl: `rtmp://192.168.31.189:1935/live/${template.id}`,
-      createdAt: faker.date.past().toISOString()
+      createdAt: customFaker.date.past().toISOString()
     });
   });
 
@@ -76,8 +76,8 @@ const generateMockDebateTopics = () => {
       leftPosition: template.leftSide, // 兼容性字段
       rightPosition: template.rightSide, // 兼容性字段
       streamId: template.streamId,
-      createdAt: faker.date.past().toISOString(),
-      updatedAt: faker.date.recent().toISOString()
+      createdAt: customFaker.date.past().toISOString(),
+      updatedAt: customFaker.date.recent().toISOString()
     });
   });
 
@@ -91,8 +91,8 @@ const generateMockVotes = () => {
   // 为每个直播流生成投票数据
   const streams = generateMockStreams();
   streams.forEach(stream => {
-    const leftVotes = faker.datatype.number({ min: 100, max: 500 });
-    const rightVotes = faker.datatype.number({ min: 100, max: 500 });
+    const leftVotes = customFaker.datatype.number({ min: 100, max: 500 });
+    const rightVotes = customFaker.datatype.number({ min: 100, max: 500 });
     const totalVotes = leftVotes + rightVotes;
 
     votes.set(stream.id, {
@@ -100,12 +100,12 @@ const generateMockVotes = () => {
       leftVotes,
       rightVotes,
       totalVotes,
-      lastUpdated: faker.date.recent().toISOString(),
+      lastUpdated: customFaker.date.recent().toISOString(),
       // 模拟实时投票趋势
       voteHistory: Array.from({ length: 20 }, (_, i) => ({
         timestamp: new Date(Date.now() - (20 - i) * 60000).toISOString(),
-        leftVotes: Math.max(0, leftVotes - faker.datatype.number({ min: 0, max: 50 })),
-        rightVotes: Math.max(0, rightVotes - faker.datatype.number({ min: 0, max: 50 }))
+        leftVotes: Math.max(0, leftVotes - customFaker.datatype.number({ min: 0, max: 50 })),
+        rightVotes: Math.max(0, rightVotes - customFaker.datatype.number({ min: 0, max: 50 }))
       }))
     });
   });
@@ -123,18 +123,18 @@ const generateMockComments = () => {
 
   contentIds.forEach(contentId => {
     // 每个内容生成5-15条评论
-    const commentCount = faker.datatype.number({ min: 5, max: 15 });
+    const commentCount = customFaker.datatype.number({ min: 5, max: 15 });
 
     for (let i = 0; i < commentCount; i++) {
       comments.push({
-        id: faker.datatype.uuid(),
+        id: customFaker.datatype.uuid(),
         contentId,
-        text: faker.lorem.sentences(faker.datatype.number({ min: 1, max: 3 })),
-        user: faker.helpers.arrayElement(users),
-        avatar: faker.image.avatar(),
-        likes: faker.datatype.number({ min: 0, max: 100 }),
-        createdAt: faker.date.recent().toISOString(),
-        isLiked: faker.datatype.boolean()
+        text: customFaker.lorem.sentences(customFaker.datatype.number({ min: 1, max: 3 })),
+        user: customFaker.helpers.arrayElement(users),
+        avatar: customFaker.image.avatar(),
+        likes: customFaker.datatype.number({ min: 0, max: 100 }),
+        createdAt: customFaker.date.recent().toISOString(),
+        isLiked: customFaker.datatype.boolean()
       });
     }
   });
@@ -150,19 +150,19 @@ const generateMockAiContent = () => {
 
   streams.forEach(stream => {
     // 为每个直播流生成5-10条AI识别内容
-    const contentCount = faker.datatype.number({ min: 5, max: 10 });
+    const contentCount = customFaker.datatype.number({ min: 5, max: 10 });
 
     for (let i = 0; i < contentCount; i++) {
       aiContents.push({
-        id: faker.datatype.uuid(),
+        id: customFaker.datatype.uuid(),
         streamId: stream.id,
-        type: faker.helpers.arrayElement(['speech', 'emotion', 'gesture', 'keyword']),
-        content: faker.lorem.sentences(2),
-        confidence: faker.datatype.float({ min: 0.5, max: 0.95, precision: 0.01 }),
-        timestamp: faker.date.recent().toISOString(),
-        speaker: faker.helpers.arrayElement(['正方辩手', '反方辩手', '主持人', '观众']),
-        emotion: faker.helpers.arrayElement(['开心', '愤怒', '平静', '激动', '困惑']),
-        keywords: faker.lorem.words(3).split(' ')
+        type: customFaker.helpers.arrayElement(['speech', 'emotion', 'gesture', 'keyword']),
+        content: customFaker.lorem.sentences(2),
+        confidence: customFaker.datatype.float({ min: 0.5, max: 0.95, precision: 0.01 }),
+        timestamp: customFaker.date.recent().toISOString(),
+        speaker: customFaker.helpers.arrayElement(['正方辩手', '反方辩手', '主持人', '观众']),
+        emotion: customFaker.helpers.arrayElement(['开心', '愤怒', '平静', '激动', '困惑']),
+        keywords: customFaker.lorem.words(3).split(' ')
       });
     }
   });
@@ -177,13 +177,13 @@ const generateMockUsers = () => {
   // 生成一些模拟用户
   for (let i = 0; i < 50; i++) {
     users.push({
-      id: faker.datatype.uuid(),
-      username: faker.internet.userName(),
-      nickname: faker.name.fullName(),
-      avatar: faker.image.avatar(),
-      email: faker.internet.email(),
-      createdAt: faker.date.past().toISOString(),
-      lastLogin: faker.date.recent().toISOString()
+      id: customFaker.datatype.uuid(),
+      username: customFaker.internet.userName(),
+      nickname: customFaker.name.fullName(),
+      avatar: customFaker.image.avatar(),
+      email: customFaker.internet.email(),
+      createdAt: customFaker.date.past().toISOString(),
+      lastLogin: customFaker.date.recent().toISOString()
     });
   }
 
@@ -196,8 +196,8 @@ const generateMockLiveStatus = () => {
     isLive: true,
     liveStreamUrl: 'rtmp://192.168.31.189:1935/live/stream-1',
     currentStreamId: 'stream-1',
-    startTime: faker.date.recent().toISOString(),
-    viewers: faker.datatype.number({ min: 1000, max: 5000 }),
+    startTime: customFaker.date.recent().toISOString(),
+    viewers: customFaker.datatype.number({ min: 1000, max: 5000 }),
     status: 'active'
   };
 };
@@ -207,10 +207,10 @@ const generateMockDashboard = () => {
   return {
     isLive: true,
     liveStreamUrl: 'rtmp://192.168.31.189:1935/live/stream-1',
-    totalUsers: faker.datatype.number({ min: 10000, max: 50000 }),
-    activeUsers: faker.datatype.number({ min: 1000, max: 5000 }),
-    totalVotes: faker.datatype.number({ min: 10000, max: 50000 }),
-    totalComments: faker.datatype.number({ min: 1000, max: 5000 }),
+    totalUsers: customFaker.datatype.number({ min: 10000, max: 50000 }),
+    activeUsers: customFaker.datatype.number({ min: 1000, max: 5000 }),
+    totalVotes: customFaker.datatype.number({ min: 10000, max: 50000 }),
+    totalComments: customFaker.datatype.number({ min: 1000, max: 5000 }),
     totalStreams: 3,
     currentDebateTopic: '如果有一个能一键消除痛苦的按钮，你会按吗？',
     lastUpdated: new Date().toISOString()
